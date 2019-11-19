@@ -1,5 +1,3 @@
 # B9DA100-JS
 
-Introduction to github
-
-Welcome!
+DBS - Programming for Data Analysis, Processing and Visualisation
