@@ -9,11 +9,17 @@ class TestSpellChecker(unittest.TestCase):
     # this method is executed before each test method
     def setUp(self):
         self.spellChecker = SpellChecker()
-        self.spellChecker.load_words('spell.words')
+        # instead of use the function to load one file
+        #    self.spellChecker.load_words('spell.words')
+        # let's call the new function below to read all files in the specified folder 'dic'
+        self.spellChecker.load_words_from_dir('dic/*.words')
 
     def test_dictionary_of_words(self):
         self.assertTrue(len(self.spellChecker.words) == 53751) 
 
+    # when changing the function load_words for load_words_from_dir
+    # all the existing tests below should work in the same way, otherwise
+    # the new function is not working
     def test_spell_checker(self):
         self.assertTrue(self.spellChecker.check_word('zygotic'))
         self.assertFalse(self.spellChecker.check_word('mistasdas'))

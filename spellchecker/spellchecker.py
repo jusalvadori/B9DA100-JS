@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
+import glob
 
 class SpellChecker(object):
     def __init__(self):
         self.words = []
 
     def load_file(self, file_name):
-         # lines = open(file_name).readlines() # this was causing error on python 3.7
+         # lines = open(file_name).readlines() # this line was causing error on python 3.7
          with open(file_name, 'r') as l:
              lines = l.readlines()
              return list(map(lambda x: x.strip().lower(), lines))
 
     def load_words(self, file_name):
         self.words = self.load_file(file_name)
+        
+    def load_words_from_dir(self, dir_name):
+        for f_name in glob.glob(dir_name):       
+            for line in self.load_file(f_name):
+                self.words.append(line)
 
     def check_profanities(self, word):
         return word not in ['fuck', 'shit']
