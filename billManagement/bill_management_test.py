@@ -31,7 +31,7 @@ class TestBillManagement(unittest.TestCase):
         
     def test_c_insert_bill(self):
         self.bill_management.read_bills()   # read the initial file
-        self.bill_management.insert_bill('Board Gais', 'Juliana', '2019-11-15', 115.38, 2)
+        self.bill_management.insert_bill('Board Gais', 'Juliana', '15-11-2019', 115.38, 2)
         self.bill_management.write_bills()  # write list of bills back to the file
         self.bill_management.read_bills()   # read the file again 
         # the file should has 21 rows
