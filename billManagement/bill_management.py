@@ -19,13 +19,14 @@ class bill_management(object):
                 bill_file.write(', '.join(bill) + '\n')
     
     def display_menu(self):
-        print('*************************************************************')
+        print('*********************************************************************************')
         print('Welcome to Bill Management Company') 
         print('1: View bills\n2: Insert a bill\n3: Reports\n4: T&C\n5: Exit') 
         
     def view_bills(self):
+        print('%20s'%'Company', '%20s'%'Customer', '%5s'%'Year', '%5s'%'Month', '%5s'%'Day', '%10s'%'Amount', '%10s'%'Type')    
         for bill in self.bills:
-            print(bill[0], bill[1], bill[2], bill[3], bill[4], bill[5], bill[6])
+            print('%20s' % bill[0], '%20s' % bill[1], '%5s' % bill[2], '%5s' % bill[3], '%5s' % bill[4], '%10s' % bill[5], '%10s' % bill[6])
             
     def insert_bill(self, pi_company, pi_customer, pi_date, pi_amount, pi_deb_cred):
         if pi_deb_cred == 1: 
