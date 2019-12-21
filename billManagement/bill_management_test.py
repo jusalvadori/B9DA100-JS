@@ -1,4 +1,7 @@
 import unittest
+import mock
+#from unittest.mock import patch
+#import io
 
 from bill_management import bill_management
 
@@ -9,7 +12,7 @@ class TestBillManagement(unittest.TestCase):
         self.bill_management = bill_management()          
     
     def test_a_read_bills(self):
-        self.bill_management.read_bills()
+        self.bill_management.read_bills('bills.csv')
         # initial file has 20 rows
         self.assertEqual( 20, len(self.bill_management.bills)) 
         # verify that the information in the first column in the first line is 'Eletric Ireland'
@@ -18,9 +21,9 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( 'credit', self.bill_management.bills[19][6]) 
     
     def test_b_write_bills(self):
-        self.bill_management.read_bills()   # read the initial file
-        self.bill_management.write_bills()  # write list of bills back to the file
-        self.bill_management.read_bills()   # read file again
+        self.bill_management.read_bills('bills.csv')   # read the initial file
+        self.bill_management.write_bills('bills.csv')  # write list of bills back to the file
+        self.bill_management.read_bills('bills.csv')   # read file again
         # after read, write and read again, the file should be the same
         # file should have 20 lines
         self.assertEqual( 20, len(self.bill_management.bills)) 
@@ -30,10 +33,10 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( 'credit', self.bill_management.bills[19][6]) 
         
     def test_c_insert_bill(self):
-        self.bill_management.read_bills()   # read the initial file
+        self.bill_management.read_bills('bills.csv')   # read the initial file
         self.bill_management.insert_bill('Board Gais', 'Juliana', '15-11-2019', 115.38, 2)
-        self.bill_management.write_bills()  # write list of bills back to the file
-        self.bill_management.read_bills()   # read the file again 
+        self.bill_management.write_bills('bills.csv')  # write list of bills back to the file
+        self.bill_management.read_bills('bills.csv')   # read the file again 
         # the file should has 21 rows
         self.assertEqual( 21, len(self.bill_management.bills)) 
         # check if each column from the lasst line is correct as per information inserted
@@ -44,6 +47,25 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( '15', self.bill_management.bills[20][4])        
         self.assertEqual( '115.38', self.bill_management.bills[20][5])        
         self.assertEqual( 'debit', self.bill_management.bills[20][6]) 
+        
+    def test_d_total_by_year(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file
+        total_year = self.bill_management.total_by_year()  
+        self.assertEqual( '2017', total_year[0]['year'])   
+        self.assertEqual( '49.74', str( round(total_year[0]['credit'],2)) )
+        
+        
+    def test_z_get_input_string(self):
+        with mock.patch('builtins.input', return_value="Board Gais"):
+            assert self.bill_management.get_input_string('Please enter the company name:') == "Board Gais"
+                       
+ #   @patch('sys.stdout', new_callable=io.StringIO)
+ #   def test_e_get_input_number(self):   
+ #       self.bill_management = bill_management()          
+ #       with mock.patch('sys.stdout', new=io.StringIO('112')) as get_input_number:
+ #           self.bill_management.get_input_number('Please enter the bill amount: ', 1)
+ #           assert get_input_number.getvalue() == "Board Gais"
+         
         
 if __name__  == '__main__':
     unittest.main()

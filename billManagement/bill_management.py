@@ -4,25 +4,20 @@ class bill_management(object):
     def __init__(self):
         self.bills = []
 
-    def read_bills(self): 
+    def read_bills(self, file_name): 
         self.bills = []
-        bills_file = open('bills.csv') 
+        bills_file = open(file_name) 
         for line in bills_file: 
             self.bills.append(line.strip().split(',')) 
             #remove leading/trailing space from each column for the line appended
             for col in range(0,len(self.bills[-1])): 
                 self.bills[-1][col] = self.bills[-1][col].strip()     
     
-    def write_bills(self):
-        with open('bills.csv', mode='w') as bill_file:
+    def write_bills(self, file_name):
+        with open(file_name, mode='w') as bill_file:
             for bill in self.bills: 
                 bill_file.write(', '.join(bill) + '\n')
-    
-    def display_menu(self):
-        print('*********************************************************************************')
-        print('Welcome to Bill Management Company') 
-        print('1: View bills\n2: Insert a bill\n3: Reports\n4: T&C\n5: Exit') 
-        
+            
     def view_bills(self):
         print('%20s'%'Company', '%20s'%'Customer', '%5s'%'Year', '%5s'%'Month', '%5s'%'Day', '%10s'%'Amount', '%10s'%'Type')    
         for bill in self.bills:
@@ -82,8 +77,71 @@ class bill_management(object):
             else:
                 break
         return value
+    
+    #############################################################################################################
+    # Report 1:
+    # function to calculate total credited and total debited for each year
+    def total_by_year(self):
+        total_year = [] 
+        for bill in self.bills:
+            if bill[6] == 'credit':
+                tcred  = float(bill[5])
+                tdeb   = 0
+            else:
+                tcred  = 0
+                tdeb   = float(bill[5])
+            
+            found = 0
+            if len(total_year) > 0:                
+                for index in range(len(total_year)):
+                    if bill[2] == total_year[index]['year']: 
+                        found = 1
+                        total_year[index]['credit'] += tcred
+                        total_year[index]['debit']  += tdeb
+                            
+            if found == 0:
+                total_year.append( {'year': bill[2] , 'credit': tcred , 'debit': tdeb} )
         
+        return total_year                
+    
+    #############################################################################################################
+    # Report 1:
+    # This report lists total credited and total debited for each year
+    def display_total_by_year(self):
+        total_year = self.total_by_year()
         
+        print('\nTotal by year')
+        print('%5s'%'Year', '%20s'%'Total credited', '%20s'%'Total debited')  
+        for index in range(len(total_year)):
+            print('%5s' % total_year[index]['year'], '%20s' % round(total_year[index]['credit'],2), '%20s' % round(total_year[index]['debit'],2) )
+        
+    #############################################################################################################
+    # Display main menu
+    def display_menu(self):
+        print('*********************************************************************************')
+        print('Welcome to Bill Management Company') 
+        print('1: View bills\n2: Insert a bill\n3: Reports\n4: T&C\n5: Exit') 
+        
+    #############################################################################################################
+    # Display reports menu
+    def display_reports_menu(self):
+        print('\n---------------------------------------------------------------------------------')
+        print('Reports available:') 
+        print('1: Total by year\n2: Most popular utility company\n3: Bills in date order\n4: Highest amount by bill type\n5: Number of bills by company \n6: Average spent per period of time \n7: Average time between bills \n8: Return') 
+
+    #############################################################################################################
+    # Process user choice - reports menu
+    def process_report_choice(self):
+        report_choice = None
+        while report_choice != '8':    # check the version of python to identify the type of return from input function 
+            self.display_reports_menu()
+            report_choice = input('Please enter an option:') 
+            
+            if report_choice == '1':
+                self.display_total_by_year()
+        
+    #############################################################################################################
+    # Process user choice - main menu
     def process_choice(self):
         choice = None
         while choice != '5':    # check the version of python to identify the type of return from input function 
@@ -101,12 +159,14 @@ class bill_management(object):
                 bill_type     = self.get_input_number('Please enter the bill type (1=Credit or 2=Debit): ',2)
                 self.insert_bill(bill_company,bill_customer,bill_date,bill_amount,bill_type)
                       
+            elif choice == '3':
+                self.process_report_choice()    
                            
             
     def main(self):
-        self.read_bills()
+        self.read_bills('bills.csv')
         self.process_choice()
-        self.write_bills()  # before leaving the application save the list of bills
+        self.write_bills('bills.csv')  # before leaving the application save the list of bills
     
 if __name__  == '__main__':
     bill_management = bill_management()
