@@ -4,21 +4,18 @@ class bill_management(object):
     def __init__(self):
         self.bills = []
 
-    def read_bills(self):
+    def read_bills(self): 
         self.bills = []
-        with open('bills.csv', 'r') as l:
-             line = l.readlines()
-             self.bills.append( list(map(lambda x: x.strip().split(','), line)) ) 
-             self.bills[-1][-1] = self.bills[-1][-1].strip()
-         
-   #     bills_file = open('bills.csv') 
-  #      for line in bills_file: 
-   #         self.bills.append(line.strip().split(',')) 
-   #         self.bills[-1][-1] = self.bills[-1][-1].strip()  
+        bills_file = open('bills.csv') 
+        for line in bills_file: 
+            self.bills.append(line.strip().split(',')) 
+            #remove leading/trailing space from each column for the line appended
+            for col in range(0,len(self.bills[-1])): 
+                self.bills[-1][col] = self.bills[-1][col].strip()     
     
     def write_bills(self):
         with open('bills.csv', mode='w') as bill_file:
-            for bill in self.bills:            
+            for bill in self.bills: 
                 bill_file.write(', '.join(bill) + '\n')
     
     def display_menu(self):
