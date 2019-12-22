@@ -159,7 +159,39 @@ class bill_management(object):
         for company in most_popular:
             print('%20s' % company[0], '%10s' % company[1] )
 
+    #############################################################################################################
+    # Report 3:
+    # function to order bills by date
+    def order_bills_by_date(self):
+        bills = []
+        for bill in self.bills:
+               ordered_bills = {}
+               ordered_bills['company']  = bill[0]
+               ordered_bills['customer'] = bill[1]
+               date_str = (bill[4]+'-'+bill[3]+'-'+bill[2])
+               date_obj = datetime.datetime.strptime(date_str, '%d-%m-%Y')
+               ordered_bills['date']     = date_obj.date()
+               ordered_bills['amount']   = bill[5]
+               ordered_bills['type']     = bill[6]
+               bills.append(ordered_bills)
+        
+        # order the result list by year
+        bills = sorted(bills, key = lambda i: i['date'])
+        return bills
+
+    #############################################################################################################
+    # Report 3:
+    # This report lists the bills ordered by date
+    def display_order_bills_by_date(self):
+        ordered = self.order_bills_by_date()
+        
+        print('\n---------------------------------------------------------------------------------')
+        print('\nBills ordered by date')
+        print('%20s'%'Company', '%20s'%'Customer', '%10s'%'Date', '%10s'%'Amount', '%10s'%'Type')    
+        for index in range(len(ordered)):
+            print('%20s' %  ordered[index]['company'], '%20s' % ordered[index]['customer'], '%10s' % ordered[index]['date'], '%10s' % ordered[index]['amount'], '%10s' % ordered[index]['type'])
             
+    
     #############################################################################################################
     # Display main menu
     def display_menu(self):
@@ -188,7 +220,8 @@ class bill_management(object):
             elif report_choice == '2':
                 self.display_most_popular_company()
                 
-                
+            elif report_choice == '3':
+                self.display_order_bills_by_date()
                 
         
     #############################################################################################################

@@ -48,10 +48,28 @@ class TestBillManagement(unittest.TestCase):
     def test_d_total_by_year(self):
         self.bill_management.read_bills('bills.csv')  # read the initial file
         total_year = self.bill_management.total_by_year()  
-        self.assertEqual( '2017', total_year[0]['year'])   
-        self.assertEqual( '49.74', str( round(total_year[0]['credit'],2)) )
+        self.assertEqual( '2016', total_year[0]['year'])   
+        self.assertEqual( '5.0', str( round(total_year[0]['credit'],2)) )
         self.assertEqual( '167.52', str( round(total_year[0]['debit'],2)) )
         
+    def test_e_most_popular_company(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file
+        most_popular = self.bill_management.most_popular_company()  
+        self.assertEqual( 'Vodafone', most_popular[0][0])   
+        self.assertEqual( '8', str( most_popular[0][1] ))
+        
+    def test_f_total_by_year(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file
+        ordered_bills = self.bill_management.order_bills_by_date()  
+        # first bill by date
+        self.assertEqual( 'Energia', ordered_bills[0]['company'])   
+        self.assertEqual( 'Susie Sue', ordered_bills[0]['customer'] )
+        self.assertEqual( '2016-11-03', ordered_bills[0]['date'].strftime('%Y-%m-%d') )
+        # last bill by date
+        self.assertEqual( 'Energia', ordered_bills[-1]['company'])   
+        self.assertEqual( 'Missy May', ordered_bills[-1]['customer'] )
+        self.assertEqual( '2019-12-22', ordered_bills[-1]['date'].strftime('%Y-%m-%d'))
+  
         
 
         
