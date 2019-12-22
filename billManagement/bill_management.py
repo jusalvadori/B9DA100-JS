@@ -4,6 +4,8 @@ class bill_management(object):
     def __init__(self):
         self.bills = []
 
+    #############################################################################################################
+    # Read bills from csv file
     def read_bills(self, file_name): 
         self.bills = []
         bills_file = open(file_name) 
@@ -13,16 +15,22 @@ class bill_management(object):
             for col in range(0,len(self.bills[-1])): 
                 self.bills[-1][col] = self.bills[-1][col].strip()     
     
+    #############################################################################################################
+    # Write list of bills back to the csv file
     def write_bills(self, file_name):
         with open(file_name, mode='w') as bill_file:
             for bill in self.bills: 
                 bill_file.write(', '.join(bill) + '\n')
-            
+                
+    #############################################################################################################
+    # Display list of bills 
     def view_bills(self):
         print('%20s'%'Company', '%20s'%'Customer', '%5s'%'Year', '%5s'%'Month', '%5s'%'Day', '%10s'%'Amount', '%10s'%'Type')    
         for bill in self.bills:
             print('%20s' % bill[0], '%20s' % bill[1], '%5s' % bill[2], '%5s' % bill[3], '%5s' % bill[4], '%10s' % bill[5], '%10s' % bill[6])
-            
+    
+    #############################################################################################################
+    # Insert a new bill to the current list
     def insert_bill(self, pi_company, pi_customer, pi_date, pi_amount, pi_deb_cred):
         if pi_deb_cred == 1: 
             p_type = 'credit' 
@@ -36,13 +44,17 @@ class bill_management(object):
                         , str(pi_amount)
                         , p_type ] )
     
+    #############################################################################################################
+    # Receive a string input
     def get_input_string(self, prompt):
         value = input(prompt)
         while not value:
             value = input(prompt)
             
         return value
-    
+   
+    #############################################################################################################
+    # Receive a date input from the user
     def get_input_date(self, prompt):
         while True:
             value = input(prompt)
@@ -57,6 +69,8 @@ class bill_management(object):
             
         return value
     
+    #############################################################################################################
+    # Receive a number input from the user    
     def get_input_number(self, prompt, p_type):
         while True:
             try:
@@ -102,6 +116,9 @@ class bill_management(object):
             if found == 0:
                 total_year.append( {'year': bill[2] , 'credit': tcred , 'debit': tdeb} )
         
+        # order the result list by year
+        total_year = sorted(total_year, key = lambda i: i['year'])
+        
         return total_year                
     
     #############################################################################################################
@@ -110,15 +127,43 @@ class bill_management(object):
     def display_total_by_year(self):
         total_year = self.total_by_year()
         
+        print('\n---------------------------------------------------------------------------------')
         print('\nTotal by year')
         print('%5s'%'Year', '%20s'%'Total credited', '%20s'%'Total debited')  
         for index in range(len(total_year)):
             print('%5s' % total_year[index]['year'], '%20s' % round(total_year[index]['credit'],2), '%20s' % round(total_year[index]['debit'],2) )
         
     #############################################################################################################
+    # Report 2:
+    # function to calculate the most popular utility company
+    def most_popular_company(self):
+        most_popular = {} 
+        for bill in self.bills:    
+            if bill[0] in most_popular:
+                most_popular[bill[0]] += 1
+            else:
+                most_popular[bill[0]] = 1
+        
+        most_popular = sorted (most_popular.items() , reverse=True)
+        return most_popular
+        
+    #############################################################################################################
+    # Report 2:
+    # This report lists the most popular utility company by number of bills
+    def display_most_popular_company(self):
+        most_popular = self.most_popular_company()        
+        
+        print('\n---------------------------------------------------------------------------------')
+        print('\nMost popular utility company')
+        print('%20s'%'Company', '%10s'%'Number of bills')  
+        for company in most_popular:
+            print('%20s' % company[0], '%10s' % company[1] )
+
+            
+    #############################################################################################################
     # Display main menu
     def display_menu(self):
-        print('*********************************************************************************')
+        print('\n*********************************************************************************')
         print('Welcome to Bill Management Company') 
         print('1: View bills\n2: Insert a bill\n3: Reports\n4: T&C\n5: Exit') 
         
@@ -139,6 +184,12 @@ class bill_management(object):
             
             if report_choice == '1':
                 self.display_total_by_year()
+            
+            elif report_choice == '2':
+                self.display_most_popular_company()
+                
+                
+                
         
     #############################################################################################################
     # Process user choice - main menu

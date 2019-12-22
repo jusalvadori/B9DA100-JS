@@ -1,7 +1,4 @@
 import unittest
-import mock
-#from unittest.mock import patch
-#import io
 
 from bill_management import bill_management
 
@@ -53,19 +50,10 @@ class TestBillManagement(unittest.TestCase):
         total_year = self.bill_management.total_by_year()  
         self.assertEqual( '2017', total_year[0]['year'])   
         self.assertEqual( '49.74', str( round(total_year[0]['credit'],2)) )
+        self.assertEqual( '167.52', str( round(total_year[0]['debit'],2)) )
         
         
-    def test_z_get_input_string(self):
-        with mock.patch('builtins.input', return_value="Board Gais"):
-            assert self.bill_management.get_input_string('Please enter the company name:') == "Board Gais"
-                       
- #   @patch('sys.stdout', new_callable=io.StringIO)
- #   def test_e_get_input_number(self):   
- #       self.bill_management = bill_management()          
- #       with mock.patch('sys.stdout', new=io.StringIO('112')) as get_input_number:
- #           self.bill_management.get_input_number('Please enter the bill amount: ', 1)
- #           assert get_input_number.getvalue() == "Board Gais"
-         
+
         
 if __name__  == '__main__':
     unittest.main()
