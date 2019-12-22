@@ -70,7 +70,23 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( 'Missy May', ordered_bills[-1]['customer'] )
         self.assertEqual( '2019-12-22', ordered_bills[-1]['date'].strftime('%Y-%m-%d'))
   
+    def test_g_highest_amount_credit(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file    
+        # hightest credit amount
+        sorted_by_credit = self.bill_management.highest_amount('credit')        
+        self.assertEqual( 'Electric Ireland', sorted_by_credit[0][0])  
+        self.assertEqual( 'John Smyth', sorted_by_credit[0][1] )
+        self.assertEqual( '81.58', sorted_by_credit[0][5] )   
+        self.assertEqual( 'credit', sorted_by_credit[0][6] )
         
+    def test_h_highest_amount_debit(self):  
+        self.bill_management.read_bills('bills.csv')  # read the initial file 
+        # highest debit amount
+        sorted_by_debit  = self.bill_management.highest_amount('debit')
+        self.assertEqual( 'Energia', sorted_by_debit[0][0])  
+        self.assertEqual( 'Missy May', sorted_by_debit[0][1] )
+        self.assertEqual( '152.52', sorted_by_debit[0][5] )   
+        self.assertEqual( 'debit', sorted_by_debit[0][6] )
 
         
 if __name__  == '__main__':

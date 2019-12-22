@@ -136,6 +136,7 @@ class bill_management(object):
     #############################################################################################################
     # Report 2:
     # function to calculate the most popular utility company
+    # this method is used by: display_most_popular_company and display_nr_bills_per_company
     def most_popular_company(self):
         most_popular = {} 
         for bill in self.bills:    
@@ -156,8 +157,7 @@ class bill_management(object):
         print('\n---------------------------------------------------------------------------------')
         print('\nMost popular utility company')
         print('%20s'%'Company', '%10s'%'Number of bills')  
-        for company in most_popular:
-            print('%20s' % company[0], '%10s' % company[1] )
+        print('%20s' % most_popular[0][0], '%10s' % most_popular[0][1] )
 
     #############################################################################################################
     # Report 3:
@@ -175,7 +175,7 @@ class bill_management(object):
                ordered_bills['type']     = bill[6]
                bills.append(ordered_bills)
         
-        # order the result list by year
+        # order the result list by date
         bills = sorted(bills, key = lambda i: i['date'])
         return bills
 
@@ -191,6 +191,44 @@ class bill_management(object):
         for index in range(len(ordered)):
             print('%20s' %  ordered[index]['company'], '%20s' % ordered[index]['customer'], '%10s' % ordered[index]['date'], '%10s' % ordered[index]['amount'], '%10s' % ordered[index]['type'])
             
+    #############################################################################################################
+    # Report 4:
+    # function to find the highest amount for a bill (credit or debit)
+    def highest_amount(self, type):        
+        result = [group for group in self.bills if group[6] == type]
+        sorted_by = sorted(result, key=lambda tup: float(tup[5]), reverse=True)
+        return sorted_by
+            
+    #############################################################################################################
+    # Report 4:
+    # This report lists the highest amount for a bill that is a credit, and one for a debit.
+    def display_highest_amount(self):
+        sorted_by_credit = self.highest_amount('credit')
+        print('\n---------------------------------------------------------------------------------')
+        print('\nHighest credit amount')
+        print('%20s'%'Company', '%20s'%'Customer', '%10s'%'Date', '%10s'%'Amount', '%10s'%'Type')    
+        date_str = sorted_by_credit[0][4]+'-'+sorted_by_credit[0][3]+'-'+sorted_by_credit[0][2]
+        date_obj = datetime.datetime.strptime(date_str, '%d-%m-%Y')
+        print('%20s' %  sorted_by_credit[0][0], '%20s' % sorted_by_credit[0][1], '%10s' % date_obj.date(), '%10s' % sorted_by_credit[0][5], '%10s' % sorted_by_credit[0][6])
+        
+        sorted_by_debit  = self.highest_amount('debit')
+        print('\nHighest credit amount')
+        print('%20s'%'Company', '%20s'%'Customer', '%10s'%'Date', '%10s'%'Amount', '%10s'%'Type')    
+        date_str = sorted_by_debit[0][4]+'-'+sorted_by_debit[0][3]+'-'+sorted_by_debit[0][2]
+        date_obj = datetime.datetime.strptime(date_str, '%d-%m-%Y')
+        print('%20s' %  sorted_by_debit[0][0], '%20s' % sorted_by_debit[0][1], '%10s' % date_obj.date(), '%10s' % sorted_by_debit[0][5], '%10s' % sorted_by_debit[0][6])
+            
+    #############################################################################################################
+    # Report 5:
+    # This report lists the total number of bills per company
+    def display_nr_bills_per_company(self):
+        most_popular = self.most_popular_company()        
+        
+        print('\n---------------------------------------------------------------------------------')
+        print('\nTotal number of bills per company')
+        print('%20s'%'Company', '%10s'%'Number of bills')  
+        for company in most_popular:
+            print('%20s' % company[0], '%10s' % company[1] )
     
     #############################################################################################################
     # Display main menu
@@ -222,6 +260,12 @@ class bill_management(object):
                 
             elif report_choice == '3':
                 self.display_order_bills_by_date()
+                
+            elif report_choice == '4':
+                self.display_highest_amount()
+                
+            elif report_choice == '5':
+                self.display_nr_bills_per_company()
                 
         
     #############################################################################################################
