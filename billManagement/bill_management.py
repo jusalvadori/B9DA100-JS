@@ -286,8 +286,41 @@ class bill_management(object):
         print('\nAverage spent per Year/Month')
         print('%20s'%'Month/Year', '%10s'%'Mean')  
         for row in avg_per_period.iterrows():
-                print('%15s'% row[0][1]+'/'+row[0][0], '%10s'% round(row[1][0],2))      
+                print('%15s'% row[0][1]+'/'+row[0][0], '%10s'% round(row[1][0],2))    
+                
+    #############################################################################################################
+    # Report 7:
+    # function to calculate the average time between bills
+    def average_time_between_bills(self):
+        count   = 0
+        sum_dif = 0 
+        date1 = None
+        date2 = None
+        
+        sorted_by = sorted(self.bills, key=lambda tup:( tup[2], tup[3],tup[4] ))
+        for bill in sorted_by:
+            date_obj = datetime.datetime.strptime( bill[4]+'-'+bill[3]+'-'+bill[2], '%d-%m-%Y')        
+            if count == 0:
+                date1 = date_obj.date()
+                date2 = None
+            else:        
+                date2 = date1   
+                date1 = date_obj.date()    
+                sum_dif = sum_dif + (date1 - date2).days
+            
+            count = count + 1
+            
+        return ( round(sum_dif/(count-1), 2) )
     
+    #############################################################################################################
+    # Report 7:
+    # This report lists the the average time between bills
+    def display_average_time_between_bills(self):
+        average_time = self.average_time_between_bills()
+        
+        print('\n---------------------------------------------------------------------------------')
+        print('\nAverage time between bills:', average_time ,'days')
+       
     
     #############################################################################################################
     # Display main menu
@@ -329,6 +362,9 @@ class bill_management(object):
             elif report_choice == '6':
                 month_year = self.get_input_year_month('Please enter the period (mm-yyyy) or blank to list all:')
                 self.display_average_spent_per_period(month_year)
+                
+            elif report_choice == '7':                
+                self.display_average_time_between_bills()
                 
         
     #############################################################################################################

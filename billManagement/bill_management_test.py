@@ -101,6 +101,12 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( '11', next(avg_per_period.iterrows())[0][1] )  
         self.assertEqual( 27.5, next(avg_per_period.iterrows())[1][0] ) 
         
+    def test_j_average_spent_per_period(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file 
+        # average spent per period of time
+        avg_time  = self.bill_management.average_time_between_bills()
+        self.assertEqual( 57.2 , avg_time )  
+        
 if __name__  == '__main__':
     unittest.main()
     
