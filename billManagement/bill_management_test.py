@@ -91,10 +91,15 @@ class TestBillManagement(unittest.TestCase):
     def test_i_average_spent_per_period(self):
         self.bill_management.read_bills('bills.csv')  # read the initial file 
         # average spent per period of time
-        avg_per_period  = self.bill_management.average_spent_per_period()
+        avg_per_period  = self.bill_management.average_spent_per_period('')
         self.assertEqual( '2016', next(avg_per_period.iterrows())[0][0] )  
         self.assertEqual( '11', next(avg_per_period.iterrows())[0][1] )  
-        self.assertEqual( 22.5, next(avg_per_period.iterrows())[1][0] )  
+        self.assertEqual( 22.5, next(avg_per_period.iterrows())[1][0] ) 
+        
+        avg_per_period  = self.bill_management.average_spent_per_period('11-2018')
+        self.assertEqual( '2018', next(avg_per_period.iterrows())[0][0] )  
+        self.assertEqual( '11', next(avg_per_period.iterrows())[0][1] )  
+        self.assertEqual( 27.5, next(avg_per_period.iterrows())[1][0] ) 
         
 if __name__  == '__main__':
     unittest.main()

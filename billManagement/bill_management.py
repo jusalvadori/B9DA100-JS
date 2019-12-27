@@ -94,6 +94,25 @@ class bill_management(object):
         return value
     
     #############################################################################################################
+    # Receive a year/month input from the user    
+    def get_input_year_month(self, prompt):
+        while True:
+            value = input(prompt)
+            if len(value) > 0:
+                try:
+                   datetime.datetime.strptime(value, '%m-%Y')
+                   # print('The date {} is valid.'.format(value))
+                except ValueError:
+                    print('The date {} is invalid'.format(value))
+                    continue
+                
+                break
+            else:
+                break
+            
+        return value
+    
+    #############################################################################################################
     # Report 1:
     # function to calculate total credited and total debited for each year
     def total_by_year(self):
@@ -236,10 +255,17 @@ class bill_management(object):
     #############################################################################################################
     # Report 6:
     # function to calculate the average spent per period of time (month/year)
-    def average_spent_per_period(self):
-    
-        # select only debit bills
-        result = [group for group in self.bills if group[6] == 'debit']
+    def average_spent_per_period(self, month_year):
+        
+        if len(month_year) > 0:
+            month = str( datetime.datetime.strptime(month_year, '%m-%Y').month )
+            year  = str( datetime.datetime.strptime(month_year, '%m-%Y').year )
+            # select only debit bills
+            result = [group for group in self.bills if group[6] == 'debit' and group[2] == year and group[3] == month]
+        else:
+            # select only debit bills
+            result = [group for group in self.bills if group[6] == 'debit']
+            
         # convert to dataframe
         df = pd.DataFrame(result, columns=["company","customer","year","month","day","amount","type"]) 
         # convert amount columnt from string to float, so we can apply calculations over that column
@@ -253,14 +279,14 @@ class bill_management(object):
     #############################################################################################################
     # Report 6:
     # This report lists the average spent per period of time (month/year)
-    def display_average_spent_per_period(self):
-        avg_per_period  = self.average_spent_per_period()
+    def display_average_spent_per_period(self, month_year):
+        avg_per_period  = self.average_spent_per_period(month_year)
         
         print('\n---------------------------------------------------------------------------------')
         print('\nAverage spent per Year/Month')
-        print('%20s'%'Year/Month', '%10s'%'Mean')  
+        print('%20s'%'Month/Year', '%10s'%'Mean')  
         for row in avg_per_period.iterrows():
-                print('%17s'% row[0][0]+'/'+row[0][1], '%10s'% round(row[1][0],2))      
+                print('%15s'% row[0][1]+'/'+row[0][0], '%10s'% round(row[1][0],2))      
     
     
     #############################################################################################################
@@ -301,7 +327,8 @@ class bill_management(object):
                 self.display_nr_bills_per_company()
                 
             elif report_choice == '6':
-                self.display_average_spent_per_period()
+                month_year = self.get_input_year_month('Please enter the period (mm-yyyy) or blank to list all:')
+                self.display_average_spent_per_period(month_year)
                 
         
     #############################################################################################################
