@@ -81,7 +81,7 @@ ax.legend()
 ################# AVERAGE SPENT PER YEAR/MONTH #####################################################
 
 # average spent per period of time
-avg_per_period  = bill_management.average_spent_per_period()
+avg_per_period  = bill_management.average_spent_per_period('')
 
 x = []
 y = []
@@ -97,12 +97,65 @@ my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(y)))
 ax.barh(ind, y, width, color= my_colors)
 ax.set_yticks(ind+width/2)
 ax.set_yticklabels(x, minor=False)
-plt.title('Average spent per year/month')
+plt.title('Average spent per year/month (debit)')
 plt.xlabel('Amount (EUR)')
 plt.ylabel('Year/Month')     
 #Plot the data:
 plt.savefig(os.path.join('test.png'), dpi=300, format='png', bbox_inches='tight') # use format='svg' or 'pdf' for vectorial pictures
 
+######################### AMOUNT SPENT PER CUSTOMER ################################################
+
+bills = []
+bills_file = open('bills.csv') 
+for line in bills_file: 
+    bills.append(line.strip().split(',')) 
+    for col in range(0,len(bills[-1])): 
+        bills[-1][col] = bills[-1][col].strip()
+
+
+# select the bills 
+result = [group for group in bills if group[1] == 'John Smyth']
+# order the result above by the amount in the reverse order
+sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
+col1 = []
+for bill in sorted_by:
+    col1.append(float(bill[5])) 
+
+# select the bills
+result = [group for group in bills if group[1] == 'Missy May']
+# order the result above by the amount in the reverse order
+sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
+col2 = []
+for bill in sorted_by:
+    col2.append(float(bill[5])) 
+    
+    
+# select the bills
+result = [group for group in bills if group[1] == 'Susie Sue']
+# order the result above by the amount in the reverse order
+sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
+col3 = []
+for bill in sorted_by:
+    col3.append(float(bill[5])) 
+
+df = pd.DataFrame(list(zip(col1, col2, col3)), 
+               columns =['John Smyth', 'Missy May', 'Susie Sue']) 
+    
+# get columns to plot
+columns = df.columns
+# create x data
+x_data = range(0, df.shape[0])
+# create figure and axis
+fig, ax = plt.subplots()
+# plot each column
+for column in columns:
+    ax.plot(x_data, df[column], label=column)
+# set title and legend
+ax.set_title('Amount spent per customer')
+ax.legend()
+
+
 ###################################################################################################
 
 
+df.plot.hist(subplots=True, layout=(2,2), figsize=(10, 10), bins=20, title ='Amount spent per customer')

@@ -297,7 +297,7 @@ class bill_management(object):
         date1 = None
         date2 = None
         
-        sorted_by = sorted(self.bills, key=lambda tup:( tup[2], tup[3],tup[4] ))
+        sorted_by = sorted(self.bills, key=lambda tup: (int(tup[2]), int(tup[3]), int(tup[4])))
         for bill in sorted_by:
             date_obj = datetime.datetime.strptime( bill[4]+'-'+bill[3]+'-'+bill[2], '%d-%m-%Y')        
             if count == 0:
@@ -387,7 +387,12 @@ class bill_management(object):
                 self.insert_bill(bill_company,bill_customer,bill_date,bill_amount,bill_type)
                       
             elif choice == '3':
-                self.process_report_choice()    
+                self.process_report_choice()  
+            
+            elif choice == '4':
+                print('\n---------------------------------------------------------------------------------')
+                print('Check website for Terms & conditions.')
+                print('www.billmanagement.ie')
                            
             
     def main(self):
