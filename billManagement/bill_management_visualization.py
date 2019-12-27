@@ -78,11 +78,31 @@ for column in columns:
 ax.set_title('Highest amount')
 ax.legend()
 
-####################################################################################################
+################# AVERAGE SPENT PER YEAR/MONTH #####################################################
 
+# average spent per period of time
+avg_per_period  = bill_management.average_spent_per_period()
 
+x = []
+y = []
+for row in avg_per_period.iterrows():
+    x.append(row[0][0]+'/'+row[0][1]) 
+    y.append(row[1][0])
+    
 
+fig, ax = plt.subplots()    
+width = 0.75 # the width of the bars 
+ind = np.arange(len(y))  # the x locations for the groups
+my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(y)))
+ax.barh(ind, y, width, color= my_colors)
+ax.set_yticks(ind+width/2)
+ax.set_yticklabels(x, minor=False)
+plt.title('Average spent per year/month')
+plt.xlabel('Amount (EUR)')
+plt.ylabel('Year/Month')     
+#Plot the data:
+plt.savefig(os.path.join('test.png'), dpi=300, format='png', bbox_inches='tight') # use format='svg' or 'pdf' for vectorial pictures
 
-
+###################################################################################################
 
 
