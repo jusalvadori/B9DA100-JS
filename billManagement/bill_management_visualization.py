@@ -1,39 +1,18 @@
+from bill_management import bill_management
+
 import pandas as pd 
 from itertools import cycle, islice 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-bills = []
-
-bills_file = open('bills.csv') 
-for line in bills_file: 
-    bills.append(line.strip().split(',')) 
-    for col in range(0,len(bills[-1])): 
-        bills[-1][col] = bills[-1][col].strip()
+bill_management = bill_management()
+bill_management.read_bills('bills.csv')  # read the initial file
  
+########## TOTAL CREDITED/DEBITED BY YEAR ###############################################################
 
-########## TOTAL CREDITED/DEBITED BY YERA###############################################################
-total_year = [] 
-for bill in bills:
-    if bill[6] == 'credit':
-        tcred  = float(bill[5])
-        tdeb   = 0
-    else:
-        tcred  = 0
-        tdeb   = float(bill[5])
+total_year = bill_management.total_by_year()
     
-    found = 0
-    if len(total_year) > 0:                
-        for index in range(len(total_year)):
-            if bill[2] == total_year[index]['year']: 
-                found = 1
-                total_year[index]['credit'] += tcred
-                total_year[index]['debit']  += tdeb
-                    
-    if found == 0:
-        total_year.append( {'year': bill[2] , 'credit': tcred , 'debit': tdeb} )        
- 
 tot_year_cred= {}     
 tot_year_deb= {}  
 for index in range(len(total_year)):
@@ -44,31 +23,14 @@ pd.DataFrame(tot_year_cred, index=['total']).plot(kind='bar' , title ='Total cre
 pd.DataFrame(tot_year_deb, index=['total']).plot(kind='bar' , title ='Total debited by year')   
        
 ########## MOST POPULAR UTILITY COMPANY ################################################################
-most_popular = {} 
-for bill in bills:    
-    if bill[0] in most_popular:
-        most_popular[bill[0]] += 1
-    else:
-        most_popular[bill[0]] = 1
+most_popular = bill_management.most_popular_company() 
 
-most_popular = sorted (most_popular.items() , reverse=True)
-
-col1 = []
-col2 = []
+x = []
+y = []
 for company in most_popular:
-    col1.append(company[0]) 
-    col2.append(company[1])
+    x.append(company[0]) 
+    y.append(company[1])
     
-## option 1    
-#df = pd.DataFrame(list(zip(col1, col2)), 
-#               columns =['Company', 'nr_bills']) 
-#df 
-#my_colors = list(islice(cycle(['b', 'r', 'g', 'y', 'k']), None, len(df['nr_bills'])))
-#df['nr_bills'].sort_index().plot.barh(color=my_colors, title= 'Most Popular utility company')
-
-## option 2
-x = col1
-y = col2
 
 fig, ax = plt.subplots()    
 width = 0.75 # the width of the bars 
@@ -84,20 +46,39 @@ plt.ylabel('Utility company')
 plt.savefig(os.path.join('test.png'), dpi=300, format='png', bbox_inches='tight') # use format='svg' or 'pdf' for vectorial pictures
 
 
-#######################################################################################################
+#################### HIGHEST AMOUNT ################################################################
 
+# select credit amounts
+sorted_by = bill_management.highest_amount('credit') 
+sorted_by_credit = sorted(sorted_by, key=lambda tup: float(tup[5]))
+col1 = []
+for bill in sorted_by_credit:
+    col1.append(float(bill[5])) 
 
+# select debit amounts
+sorted_by = bill_management.highest_amount('debit') 
+sorted_by_debit = sorted(sorted_by, key=lambda tup: float(tup[5]))
+col2 = []
+for bill in sorted_by_debit:
+    col2.append(float(bill[5])) 
 
+df = pd.DataFrame(list(zip(col1, col2)), 
+               columns =['credit', 'debit']) 
+    
+# get columns to plot
+columns = df.columns
+# create x data
+x_data = range(0, df.shape[0])
+# create figure and axis
+fig, ax = plt.subplots()
+# plot each column
+for column in columns:
+    ax.plot(x_data, df[column], label=column)
+# set title and legend
+ax.set_title('Highest amount')
+ax.legend()
 
-
-
-
-
-
-
-
-
-
+####################################################################################################
 
 
 

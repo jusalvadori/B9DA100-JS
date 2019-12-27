@@ -195,7 +195,9 @@ class bill_management(object):
     # Report 4:
     # function to find the highest amount for a bill (credit or debit)
     def highest_amount(self, type):        
+        # select only bills where type is the requested one
         result = [group for group in self.bills if group[6] == type]
+        # order the result above by the amount in the reverse order
         sorted_by = sorted(result, key=lambda tup: float(tup[5]), reverse=True)
         return sorted_by
             
@@ -212,7 +214,7 @@ class bill_management(object):
         print('%20s' %  sorted_by_credit[0][0], '%20s' % sorted_by_credit[0][1], '%10s' % date_obj.date(), '%10s' % sorted_by_credit[0][5], '%10s' % sorted_by_credit[0][6])
         
         sorted_by_debit  = self.highest_amount('debit')
-        print('\nHighest credit amount')
+        print('\nHighest debit amount')
         print('%20s'%'Company', '%20s'%'Customer', '%10s'%'Date', '%10s'%'Amount', '%10s'%'Type')    
         date_str = sorted_by_debit[0][4]+'-'+sorted_by_debit[0][3]+'-'+sorted_by_debit[0][2]
         date_obj = datetime.datetime.strptime(date_str, '%d-%m-%Y')
