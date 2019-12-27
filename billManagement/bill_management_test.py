@@ -49,14 +49,14 @@ class TestBillManagement(unittest.TestCase):
         self.bill_management.read_bills('bills.csv')  # read the initial file
         total_year = self.bill_management.total_by_year()  
         self.assertEqual( '2016', total_year[0]['year'])   
-        self.assertEqual( '5.0', str( round(total_year[0]['credit'],2)) )
-        self.assertEqual( '167.52', str( round(total_year[0]['debit'],2)) )
+        self.assertEqual( 5.0, round(total_year[0]['credit'],2) )
+        self.assertEqual( 167.52, round(total_year[0]['debit'],2) )
         
     def test_e_most_popular_company(self):
         self.bill_management.read_bills('bills.csv')  # read the initial file
         most_popular = self.bill_management.most_popular_company()  
         self.assertEqual( 'Vodafone', most_popular[0][0])   
-        self.assertEqual( '8', str( most_popular[0][1] ))
+        self.assertEqual( 8, most_popular[0][1])
         
     def test_f_total_by_year(self):
         self.bill_management.read_bills('bills.csv')  # read the initial file
@@ -86,8 +86,15 @@ class TestBillManagement(unittest.TestCase):
         self.assertEqual( 'Energia', sorted_by_debit[0][0])  
         self.assertEqual( 'Missy May', sorted_by_debit[0][1] )
         self.assertEqual( '152.52', sorted_by_debit[0][5] )   
-        self.assertEqual( 'debit', sorted_by_debit[0][6] )
-
+        self.assertEqual( 'debit', sorted_by_debit[0][6] )        
+        
+    def test_i_average_spent_per_period(self):
+        self.bill_management.read_bills('bills.csv')  # read the initial file 
+        # average spent per period of time
+        avg_per_period  = self.bill_management.average_spent_per_period()
+        self.assertEqual( '2016', next(avg_per_period.iterrows())[0][0] )  
+        self.assertEqual( '11', next(avg_per_period.iterrows())[0][1] )  
+        self.assertEqual( 22.5, next(avg_per_period.iterrows())[1][0] )  
         
 if __name__  == '__main__':
     unittest.main()

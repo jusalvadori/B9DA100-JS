@@ -1,4 +1,5 @@
 import datetime
+import pandas as pd 
 
 class bill_management(object):
     def __init__(self):
@@ -231,6 +232,36 @@ class bill_management(object):
         print('%20s'%'Company', '%10s'%'Number of bills')  
         for company in most_popular:
             print('%20s' % company[0], '%10s' % company[1] )
+            
+    #############################################################################################################
+    # Report 6:
+    # function to calculate the average spent per period of time (month/year)
+    def average_spent_per_period(self):
+    
+        # select only debit bills
+        result = [group for group in self.bills if group[6] == 'debit']
+        # convert to dataframe
+        df = pd.DataFrame(result, columns=["company","customer","year","month","day","amount","type"]) 
+        # convert amount columnt from string to float, so we can apply calculations over that column
+        df["amount"] = pd.to_numeric(df["amount"])
+        # group data by year/month and calculate mean over amount column
+        mean_result = df.groupby(['year','month']).agg({'amount':['mean']})
+        mean_result.columns = mean_result.columns.droplevel(0)
+
+        return (mean_result)    
+
+    #############################################################################################################
+    # Report 6:
+    # This report lists the average spent per period of time (month/year)
+    def display_average_spent_per_period(self):
+        avg_per_period  = self.average_spent_per_period()
+        
+        print('\n---------------------------------------------------------------------------------')
+        print('\nAverage spent per Year/Month')
+        print('%20s'%'Year/Month', '%10s'%'Mean')  
+        for row in avg_per_period.iterrows():
+                print('%17s'% row[0][0]+'/'+row[0][1], '%10s'% round(row[1][0],2))      
+    
     
     #############################################################################################################
     # Display main menu
@@ -268,6 +299,9 @@ class bill_management(object):
                 
             elif report_choice == '5':
                 self.display_nr_bills_per_company()
+                
+            elif report_choice == '6':
+                self.display_average_spent_per_period()
                 
         
     #############################################################################################################
