@@ -105,24 +105,16 @@ plt.savefig(os.path.join('test.png'), dpi=300, format='png', bbox_inches='tight'
 
 ######################### AMOUNT SPENT PER CUSTOMER ################################################
 
-bills = []
-bills_file = open('bills.csv') 
-for line in bills_file: 
-    bills.append(line.strip().split(',')) 
-    for col in range(0,len(bills[-1])): 
-        bills[-1][col] = bills[-1][col].strip()
-
-
-# select the bills 
-result = [group for group in bills if group[1] == 'John Smyth']
+# select John Smyth bills 
+result = [group for group in bill_management.bills if group[1] == 'John Smyth']
 # order the result above by the amount in the reverse order
 sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
 col1 = []
 for bill in sorted_by:
     col1.append(float(bill[5])) 
 
-# select the bills
-result = [group for group in bills if group[1] == 'Missy May']
+# select Missy May bills
+result = [group for group in bill_management.bills if group[1] == 'Missy May']
 # order the result above by the amount in the reverse order
 sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
 col2 = []
@@ -130,8 +122,8 @@ for bill in sorted_by:
     col2.append(float(bill[5])) 
     
     
-# select the bills
-result = [group for group in bills if group[1] == 'Susie Sue']
+# select Susie Sue bills
+result = [group for group in bill_management.bills if group[1] == 'Susie Sue']
 # order the result above by the amount in the reverse order
 sorted_by = sorted(result, key=lambda tup: (tup[2],tup[3],tup[4]))
 col3 = []
@@ -156,6 +148,5 @@ ax.legend()
 
 
 ###################################################################################################
-
 
 df.plot.hist(subplots=True, layout=(2,2), figsize=(10, 10), bins=20, title ='Amount spent per customer')
