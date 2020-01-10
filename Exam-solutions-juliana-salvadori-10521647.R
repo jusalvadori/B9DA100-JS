@@ -1,3 +1,6 @@
+# Juliana Salvadori
+# student number: 10521647
+
 
 # question 1
 
@@ -30,11 +33,58 @@ mean(iris_sub$Petal.Length)
 
 # question 3
 
+par(mfrow = c(2, 2))
 
+boxplot( iris_new$Sepal.Length ~ iris_new$Species,
+        xlab = "Species",
+        xaxt = "n",
+        col = 2:6,
+        main = "Sepal.Length", 
+        ylab = "Sepal.Length",
+        las=2)
+axis(1, at = 1:3, labels = c("Setosa", "Versicolor", "Virginica"))
+
+boxplot(iris_new$Sepal.Width ~ iris_new$Species ,
+        xlab = "Species",
+        xaxt = "n",
+        col = 2:6,
+        main = "Sepal.Width", 
+        ylab = "Sepal.Width",
+        las=2)
+axis(1, at = 1:3, labels = c("Setosa", "Versicolor", "Virginica"))
+
+boxplot(iris_new$Petal.Length ~ iris_new$Species ,
+        xlab = "Species",
+        xaxt = "n",
+        col = 2:6,
+        main = "Petal.Length", 
+        ylab = "Petal.Length",
+        las=2)
+axis(1, at = 1:3, labels = c("Setosa", "Versicolor", "Virginica"))
+
+boxplot(iris_new$Petal.Width ~ iris_new$Species ,
+        xlab = "Species",
+        xaxt = "n",
+        col = 2:6,
+        main = "Petal.Width",
+        ylab = "Petal.Width",
+        las=2)
+axis(1, at = 1:3, labels = c("Setosa", "Versicolor", "Virginica"))
 
 
 # question 4
+library(ggplot2)
 
+par(mfrow = c(1, 2))
+
+# Change point shapes and colors
+ggplot(iris_new, aes(x=Sepal.Width, y=Sepal.Length, shape=Species, color=Species)) +
+  geom_point()
+
+
+# Change point shapes and colors
+ggplot(iris_new, aes(x=Petal.Width, y=Petal.Length, shape=Species, color=Species)) +
+  geom_point()
 
 
 
